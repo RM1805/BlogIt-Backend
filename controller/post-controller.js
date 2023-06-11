@@ -12,10 +12,7 @@ export const createPost = async (request, response) => {
 
 export const updatePost = async (request, response) => {
     try {
-        const post = await Post.findOneAndUpdate(
-            { _id: request.params.id },
-            { $set: request.body }
-        );
+        const post = await Post.findByIdAndUpdate(request.params.id, request.body);
 
         if (!post) {
             return response.status(404).json({ msg: 'Post not found' });
@@ -29,7 +26,7 @@ export const updatePost = async (request, response) => {
 
 export const deletePost = async (request, response) => {
     try {
-        const post = await Post.findByIdAndDelete(request.params.id);
+        await Post.findByIdAndDelete(request.params.id);
 
         response.status(200).json('Post deleted successfully');
     } catch (error) {
@@ -48,17 +45,14 @@ export const getPost = async (request, response) => {
 };
 
 export const getAllPosts = async (request, response) => {
-    let username = request.query.username;
-    let category = request.query.category;
+    const { username, category } = request.query;
+
+    const query = {};
+    if (username) query.username = username;
+    if (category) query.categories = category;
+
     try {
-        let posts;
-        if (username) {
-            posts = await Post.find({ username: username }).lean();
-        } else if (category) {
-            posts = await Post.find({ categories: category }).lean();
-        } else {
-            posts = await Post.find({}).lean();
-        }
+        const posts = await Post.find(query).lean().select('-content');
 
         response.status(200).json(posts);
     } catch (error) {

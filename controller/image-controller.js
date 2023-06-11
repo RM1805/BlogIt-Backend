@@ -1,11 +1,22 @@
 import mongoose from 'mongoose';
+import { GridFSBucket } from 'mongodb';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
 
 const url = 'https://blogit-backend-s19u.onrender.com';
+const dbUrl = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/?retryWrites=true&w=majority`;
 
 let gridfsBucket;
+
+// Connect to MongoDB
+mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 conn.once('open', () => {
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+    gridfsBucket = new GridFSBucket(conn.db, {
         bucketName: 'fs',
     });
 });
@@ -19,6 +30,12 @@ export const uploadImage = (request, response) => {
 };
 
 export const getImage = (request, response) => {
-    const downloadStream = gridfsBucket.openDownloadStreamByName(request.params.filename);
+    const { filename } = request.params;
+
+    const downloadStream = gridfsBucket.openDownloadStreamByName(filename);
+
+    // Set cache control headers to enable browser caching
+    response.set('Cache-Control', 'public, max-age=31557600'); // Cache for 1 year
+
     downloadStream.pipe(response);
 };
