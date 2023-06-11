@@ -7,7 +7,7 @@ dotenv.config();
 const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
 
-const url = 'https://famous-belekoy-c0a088.netlify.app';
+const url = "https://blogit-backend-s19u.onrender.com";
 const dbUrl = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/?retryWrites=true&w=majority`;
 
 let gridfsBucket;
