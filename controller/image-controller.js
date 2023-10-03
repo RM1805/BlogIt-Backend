@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cloudinary from 'cloudinary';
+import { GridFSBucket } from 'mongodb'; // Import GridFSBucket
 
 dotenv.config();
 
