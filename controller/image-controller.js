@@ -18,7 +18,7 @@ cloudinary.v2.config({
   api_secret: cloudinaryApiSecret,
 });
 
-const url = "https://blogit-backend-s19u.onrender.com";
+const url = " https://copper-swallow-fez.cyclic.cloud ";
 const dbUrl = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/?retryWrites=true&w=majority`;
 
 let gridfsBucket;
