@@ -6,7 +6,7 @@ dotenv.config();
 
 const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
-const mongoURI = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const mongoURI = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/?retryWrites=true&w=majority`;
 
 const storage = new GridFsStorage({
     url: mongoURI,
