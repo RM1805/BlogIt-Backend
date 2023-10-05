@@ -2,11 +2,10 @@ import Post from '../model/post.js';
 
 export const createPost = async (request, response) => {
     try {
-        await Post.create(request.body);
-
-        response.status(200).json('Post saved successfully');
+        const newPost = await Post.create(request.body);
+        response.status(201).json({ message: 'Post saved successfully', post: newPost });
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ error: 'Error while creating a post', message: error.message });
     }
 };
 
@@ -15,22 +14,26 @@ export const updatePost = async (request, response) => {
         const post = await Post.findByIdAndUpdate(request.params.id, request.body);
 
         if (!post) {
-            return response.status(404).json({ msg: 'Post not found' });
+            return response.status(404).json({ message: 'Post not found' });
         }
 
-        response.status(200).json('Post updated successfully');
+        response.status(200).json({ message: 'Post updated successfully' });
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ error: 'Error while updating a post', message: error.message });
     }
 };
 
 export const deletePost = async (request, response) => {
     try {
-        await Post.findByIdAndDelete(request.params.id);
+        const deletedPost = await Post.findByIdAndDelete(request.params.id);
 
-        response.status(200).json('Post deleted successfully');
+        if (!deletedPost) {
+            return response.status(404).json({ message: 'Post not found' });
+        }
+
+        response.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ error: 'Error while deleting a post', message: error.message });
     }
 };
 
@@ -38,9 +41,13 @@ export const getPost = async (request, response) => {
     try {
         const post = await Post.findById(request.params.id).lean();
 
+        if (!post) {
+            return response.status(404).json({ message: 'Post not found' });
+        }
+
         response.status(200).json(post);
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ error: 'Error while retrieving a post', message: error.message });
     }
 };
 
@@ -56,6 +63,6 @@ export const getAllPosts = async (request, response) => {
 
         response.status(200).json(posts);
     } catch (error) {
-        response.status(500).json(error);
+        response.status(500).json({ error: 'Error while retrieving posts', message: error.message });
     }
 };

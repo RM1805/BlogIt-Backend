@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cloudinary from 'cloudinary';
-import { GridFSBucket } from 'mongodb'; // Import GridFSBucket
+import { GridFSBucket } from 'mongodb';
 
 dotenv.config();
 
@@ -18,12 +18,11 @@ cloudinary.v2.config({
   api_secret: cloudinaryApiSecret,
 });
 
-const url = " https://copper-swallow-fez.cyclic.cloud ";
 const dbUrl = `mongodb+srv://${username}:${password}@cluster0.qj0tyeo.mongodb.net/?retryWrites=true&w=majority`;
 
 let gridfsBucket;
 
-// Connect to MongoDB
+// Connect to MongoDB using the dbUrl variable
 mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 const conn = mongoose.connection;
 conn.once('open', () => {
@@ -33,16 +32,16 @@ conn.once('open', () => {
 });
 
 export const uploadImage = async (request, response) => {
-    if (!request.file) return response.status(404).json('File not found');
+    if (!request.file) return response.status(404).json({ message: 'File not found' });
 
     try {
         const result = await cloudinary.v2.uploader.upload(request.file.path);
 
         const imageUrl = result.secure_url;
 
-        response.status(200).json(imageUrl);
+        response.status(200).json({ imageUrl });
     } catch (error) {
-        response.status(500).json('Image upload failed');
+        response.status(500).json({ message: 'Image upload failed', error: error.message });
     }
 };
 
